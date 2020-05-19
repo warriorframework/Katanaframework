@@ -1,0 +1,12 @@
+{
+    "engineer": "",
+    "userreposdir": "/home/tony/Desktop/develop/warriorframework_py3/warrior",
+    "pythonsrcdir": "/home/tony/Desktop/develop/warriorframework_py3/warrior",
+    "xmldir": "/home/tony/Desktop/develop/warriorframework_py3/warrior/Warriorspace/Testcases",
+    "testsuitedir": "/home/tony/Desktop/develop/warriorframework_py3/warrior/Warriorspace/Suites",
+    "projdir": "/home/tony/Desktop/develop/warriorframework_py3/warrior/Warriorspace/Projects",
+    "idfdir": "/home/tony/Desktop/develop/warriorframework_py3/warrior/Warriorspace/Data",
+    "testdata": "/home/tony/Desktop/develop/warriorframework_py3/warrior/Warriorspace/Config_files",
+    "testwrapper": "/home/tony/Desktop/develop/warriorframework_py3/warrior/Warriorspace/wrapper_files",
+    "pythonpath": ""
+}
