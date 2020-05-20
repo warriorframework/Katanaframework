@@ -27,7 +27,7 @@ setup(
     include_package_data=True,
     data_files=[],
     long_description=open('module.txt').read(),
-    description="Warrior Framework is an open source Automation Framework",
+    description="Katana Framework is an open source Automation Framework",
     url="https://github.com/warriorframework/Katanaframework",
     project_urls={
         "Documentation": "http://warriorframework.org/",
