@@ -48,7 +48,7 @@ app_config_data = ""
 
 def create_log(message):
     """ this function appends the log"""
-    with open("log.txt", "a") as f:
+    with open(os.path.join(nav_obj.get_katana_dir(),"log.txt"), "a") as f:
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         log_line = dt_string + "     " + message + "\n"

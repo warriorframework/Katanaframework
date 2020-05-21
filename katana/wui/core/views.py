@@ -68,18 +68,21 @@ class getFileExplorerData(View):
         nav_obj = Navigator()
         lazy_loading = True if "data[lazy_loading]" in request.POST and request.POST["data[lazy_loading]"].lower() == "true" else False
         start_dir = "false"
+        config_data = read_config_file_data()
         if "data[start_dir]" in request.POST:
             start_dir = request.POST["data[start_dir]"]
-
         if os.environ["pipmode"] == 'True':
-            config_data = read_config_file_data()
             if config_data["pythonsrcdir"] != "" and start_dir == "false":
                 start_dir = config_data["pythonsrcdir"]
             elif config_data["pythonsrcdir"] == "" and start_dir == "false":
-                start_dir = config_data["userreposdir"]
+                start_dir = nav_obj.get_katana_dir()
         else:
-            if start_dir == "false":
-                start_dir = join_path(nav_obj.get_warrior_dir(), "Warriorspace")
+            if config_data["pythonsrcdir"] != "" and start_dir == "false":
+                get_children_only = False
+                start_dir = config_data["pythonsrcdir"]
+            elif config_data["pythonsrcdir"] == "" and start_dir == "false":
+                get_children_only = False
+                start_dir = nav_obj.get_katana_dir()
 
         if "data[path]" in request.POST and request.POST["data[path]"] != "false":
             start_dir = get_parent_directory(request.POST["data[path]"])
@@ -118,11 +121,14 @@ class getFileExplorerData(View):
                 start_dir = config_data["pythonsrcdir"]
             elif config_data["pythonsrcdir"] == "" and start_dir == "false":
                 get_children_only = False
-                start_dir = config_data["userreposdir"]
+                start_dir = nav_obj.get_katana_dir()
         else:
-            if start_dir == "false":
+            if config_data["pythonsrcdir"] != "" and start_dir == "false":
                 get_children_only = False
-                start_dir = join_path(nav_obj.get_warrior_dir(), "Warriorspace")
+                start_dir = config_data["pythonsrcdir"] + "/" +config_data["xmldir"].split("/")[-2]
+            elif config_data["pythonsrcdir"] == "" and start_dir == "false":
+                get_children_only = False
+                start_dir = nav_obj.get_katana_dir()
 
         if "path" in request.GET:
             get_children_only = False

@@ -121,7 +121,7 @@ if __name__ == "__main__":
         if int(PORT) < 1024:
             __port_error__()
 
-    with open("log.txt", "w") as f:
+    with open(os.path.join(nav_obj.get_katana_dir(),"log.txt"), "w") as f:
         f.writelines("")
 
     if len(sys.argv) > 2 and sys.argv[0].split("/")[-1] == "appmanage.py" and sys.argv[1] == "appconfig":
@@ -414,12 +414,4 @@ if __name__ == "__main__":
                 with open(app_config_file, "w") as f:
                     f.write(json.dumps(clean_data, indent=4))
             function_to_give_read_access()
-
-            y = threading.Thread(
-                target=thread_function_to_kill, args=("app",), daemon=True)
-            y.start()
-            FNULL = open(os.devnull, 'w')
-            retcode = subprocess.call(
-                ['python3', manage_py, 'runserver', PORT], stdout=FNULL,
-                stderr=subprocess.STDOUT)
             print("[100%]\nDone!")

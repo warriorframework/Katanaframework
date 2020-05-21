@@ -69,7 +69,7 @@ def validate_config_json(json_data, warrior_dir):
     :return: Ordered Dictionary containing validated config.json data
     """
     userobj = Navigator()
-    default_userrepo = userobj.get_warrior_dir()
+    default_userrepo = ""
 
     ordered_json = OrderedDict()
     if "engineer" not in json_data:
