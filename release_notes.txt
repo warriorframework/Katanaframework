@@ -1,0 +1,50 @@
+Release: Ninja
+Version: katanaframework 1.0.0
+
+===================
+1: Release details
+===================
+This is release for Web Based  Katana Framework for Automation.
+
+-------------------------------
+1.1: List of available releases
+-------------------------------
+1. katanaframework 1.0.0
+
+==================
+2. Version Details
+==================
+You are on Release Katana, Version 1.0.0 of Katana Framework.
+
+katanaframework  is released as pip installable package.
+The pre-requiste for installing pip module is python 3.6 version and above.
+
+
++++++++++++++++++++++++++++++++++
+2.1. Change log for this release
++++++++++++++++++++++++++++++++++
+
+All features and bugs from python2 warrior framework have been ported to python3 warrior framework.
+-------------
+New Features:
+-------------
+
+-----------
+Bugfixes:
+-----------
+
+=================================================
+3. Procedure to install pip module
+=================================================
+
+1.Latest version katanaframework from PyPI server
+    pip install katanaframework
+
+2.Specfic Version katanaframework from PyPI Server
+    pip install katanaframework==1.0.0
+
+3. Uninstall warriorframework
+    pip uninstall katanaframework
+
+
+

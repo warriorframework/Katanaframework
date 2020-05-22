@@ -1,0 +1,5 @@
+Name        : katanaframework
+Version     : Katana-1.0.0
+Release     : Katana 
+Build Date  : May 22 00:31:04 CDT 2020 
+Size        : 56M
