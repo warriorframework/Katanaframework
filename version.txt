@@ -1,5 +1,5 @@
-Name        : warriorframework
-Version     : warrior-4.2.0
-Release     : Ninja
-Build Date  : Wed Feb  5 10:00:00 IST 2020
+Name        : katanaframework
+Version     : Katana-1.0.0
+Release     : Katana 
+Build Date  : May 22 00:31:04 CDT 2020 
 Size        : 56M

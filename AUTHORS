@@ -1,10 +1,10 @@
-Warrior Framework Authors:
-Warrior Framework is developed and maintained by Fujitsu Network Communications (FNC). At project launch, the team is composed of
+Katana Framework Authors:
+Katana Framework is developed and maintained by Fujitsu Network Communications (FNC). At project launch, the team is composed of
 FNC employees due to Warrior Framework’s originating at FNC. Over time, community members from a diverse background will be added to 
 the team based on community contributions and involvement.
 
 
-The Warrior Framework Core Team:
+The Katana Framework Core Team:
 =========================================================================================================================
 NAME                        ROLE                            EMAIL                           GITHUB USERID     START YEAR
 =========================================================================================================================
@@ -18,6 +18,9 @@ Arvind Sethuraman       |    Developer        |  arvindkumar.sethuraman@us.fujit
 Priya Arunchalam        |    Developer        |  priya.arunchalam@us.fujitsu.com        |    priyaarun23      |   2017  |
 Keenan Jabri            |    Developer        |  Keenan.Jabri@us.fujitsu.com            |    keenan35i        |   2017  |
 Suganya Vijayaraghavan  |    Developer        |  suganya.vijayaraghavan@us.fujitsu.com  |    sugan19          |   2017  |
+Santhosh Nayak          |    Developer        |  santhosh.nayak@fujistu.com             |    santhosh-warrior |   2019  |
+Yadavalli Reddy         |    Developer        |  Reddy.Yadavalli@fujitsu.com            |    ryadaval-warrior |   2019  |
+Anil Pathapati          |    Developer        |  Anil.Pathapati@us.fujitsu.com          |    apathapa-warrior |   2019  |
 =========================================================================================================================
 
 Other contributors, listed alphabetically, are:
@@ -32,7 +35,7 @@ Other contributors, listed alphabetically, are:
 •   Dhruv Arya              
 •   Jacky Kuo
 •   Joemoel Moolayilvarghese             
-•   Karthik Sathiyamurthy     
+•   Karthik Sathiyamurthy      
 •   Kenash Kanakaraj
 •   Max Simmons
 •   Mohan Marimuthu
