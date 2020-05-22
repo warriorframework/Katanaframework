@@ -118,14 +118,24 @@ class getFileExplorerData(View):
         if os.environ["pipmode"] == 'True':
             if config_data["pythonsrcdir"] != "" and start_dir == "false":
                 get_children_only = False
-                start_dir = config_data["pythonsrcdir"]
+                if config_data["xmldir"].split("/")[-2] == "warriorspace" or config_data["xmldir"].split("/")[-2] == "Warriorspace":
+                    start_dir = config_data["pythonsrcdir"] + "/" +config_data["xmldir"].split("/")[-2]
+                elif config_data["xmldir"].split("/")[-3] == "warriorspace" or config_data["xmldir"].split("/")[-3] == "Warriorspace":
+                    start_dir = config_data["pythonsrcdir"] + "/" +config_data["xmldir"].split("/")[-3]
+                else:
+                    start_dir = config_data["pythonsrcdir"]
             elif config_data["pythonsrcdir"] == "" and start_dir == "false":
                 get_children_only = False
                 start_dir = nav_obj.get_katana_dir()
         else:
             if config_data["pythonsrcdir"] != "" and start_dir == "false":
                 get_children_only = False
-                start_dir = config_data["pythonsrcdir"] + "/" +config_data["xmldir"].split("/")[-2]
+                if config_data["xmldir"].split("/")[-2] == "warriorspace" or config_data["xmldir"].split("/")[-2] == "Warriorspace":
+                    start_dir = config_data["pythonsrcdir"] + "/" +config_data["xmldir"].split("/")[-2]
+                elif config_data["xmldir"].split("/")[-3] == "warriorspace" or config_data["xmldir"].split("/")[-3] == "Warriorspace":
+                    start_dir = config_data["pythonsrcdir"] + "/" +config_data["xmldir"].split("/")[-3]
+                else:
+                    start_dir = config_data["pythonsrcdir"]
             elif config_data["pythonsrcdir"] == "" and start_dir == "false":
                 get_children_only = False
                 start_dir = nav_obj.get_katana_dir()
