@@ -1,0 +1,54 @@
+Release: Katana
+Version: katanaframework-1.0.0
+
+===================
+1: Release details
+===================
+Katanaframework is released as pip module in pypi server.
+
+-------------------------------
+1.1: List of available releases
+-------------------------------
+1. Katana = katanaframework 1.0.0  
+
+==================
+2. Version Details
+==================
+You are on  Katana Release, Version 1.0.0 Katanaframework.
+The katanaframework is released as pip installable package. 
+pre-requiste: 
+     python 3.6 version and above.
+     warriorframework 4.3.0 for warrior apps
+    
+
++++++++++++++++++++++++++++++++++
+2.1. Change log for this release
++++++++++++++++++++++++++++++++++
+
+-------------
+New Features:
+-------------
+[WAR-2345] -  Release the Katana as seperate pip module.
+[WAR-2341] -  Seperate the config data used by the katanaframework
+[WAR-2340] -  Use the encryption to store the config.ini data.
+[WAR-2339] -  Support for mutiple Django app's in Katana framework.
+[WAR-2297] -  Support for Custom Path in Configurable app feature.
+[WAR-2353] -  Postgres and RBAC support in Katanaframework
+
+
+=================================================
+3. Procedure to install pip module
+=================================================
+
+1.Latest version katanaframework from PyPI server
+    pip install katanaframework
+
+2.Specfic Version katanaframework from PyPI Server
+    pip install katanaframework==1.0.0 
+
+3. Uninstall katanaframework
+    pip uninstall katanaframework
+
+
+
+

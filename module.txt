@@ -1,0 +1,29 @@
+Katana is Warrior Framework’s web based case creation and execution tool. From Katana, users can create cases, suites, projects, input data files and testdata files. Cases, suites, projects, input data files and testdata files in Katana are web based forms that once saved, create the appropriate xml files. Katana also allows you to execute cases, suites, and projects from the execution app.
+
+Install:
+   pip install katanaframework 
+
+Requires:
+    Python 3.6 and above
+       requests==2.21.0
+       Django==2.1.2
+       xmltodict==0.12.0
+       python-ldap
+       django_auth_ldap
+       djangorestframework==3.10.3
+       cryptography==2.9.2
+       gcg==0.2.0
+       termcolor==1.1.0
+
+
+To start the Katana Server :
+        manage.py runserver
+
+Links:
+      Documentation: https://github.com/warriorframework/Katanaframework/blob/release-katana-1.0.0/docs/Katana%20User%20Guide%20-1.0.pdf 
+
+      License      : http://www.apache.org/licenses/LICENSE-2.0
+
+      Source       : https://github.com/warriorframework/Katanaframework
+
+
