@@ -16,11 +16,11 @@ Requires:
        termcolor==1.1.0
 
 
-Command Line Usage:
-        Warrior -h
+To start the Katana Server :
+        manage.py runserver
 
 Links:
-      Documentation: http://warriorframework.org/
+      Documentation: https://github.com/warriorframework/Katanaframework/blob/release-katana-1.0.0/docs/Katana%20User%20Guide%20-1.0.pdf 
 
       License      : http://www.apache.org/licenses/LICENSE-2.0
 
