@@ -52,7 +52,16 @@ wapps_dir_path = BASE_DIR + "/wapps/"
 wapps_dir = BASE_DIR + "/wapps"
 native_dir = BASE_DIR + "/native"
 settings_file = BASE_DIR + "/wui/settings.py"
-app_config_file = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
+
+if os.environ["pipmode"] == "True":
+    virtual_env = os.getenv('VIRTUAL_ENV')
+    if virtual_env:
+        app_config_file = virtual_env + os.sep + "katana_configs" + os.sep + "app_config.json"
+    else:
+        app_config_file = site.getuserbase() + os.sep + "katana_configs" + os.sep + "app_config.json"
+else:
+    app_config_file = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
+
 manage_py = os.path.join(BASE_DIR, "manage.py")
 urls_file = BASE_DIR + "/wui/urls.py"
 wapps_content = os.listdir(wapps_dir)
@@ -85,20 +94,6 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
-    try:
-        import katana
-
-        os.environ["pipmode"] = "True"
-    # except ModuleNotFoundError as error:
-    except:
-        WARRIORDIR = dirname(dirname(abspath(__file__)))
-        sys.path.append(WARRIORDIR)
-        try:
-            import katana
-
-            os.environ["pipmode"] = "False"
-        except:
-            raise
 
     def __port_error__():
         """this function prints port error message"""
@@ -107,9 +102,7 @@ if __name__ == "__main__":
 
     def read_config_file_data():
         """this function reads the data from appconfig.json file"""
-        config_file_path = join_path(
-            nav_obj.get_katana_dir(), "katana_configs", "app_config.json")
-        data = read_json_data(config_file_path)
+        data = read_json_data(app_config_file)
         return data
     app_config_data = read_config_file_data()
 
@@ -173,7 +166,7 @@ if __name__ == "__main__":
                     final_input_json_data["apps_rely_on_postgresdb"] = []
 
                 if app_config_data["__READ_ACCESS__"] == "True":
-                    app_config_json_path = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
+                    app_config_json_path = app_config_file
                     final_input_json_data["__READ_ACCESS__"] = "True"
                     final_input_json_data["__userconfigured__"] = "True"
                     final_input_json_data["__normal_run__"] = "True"
