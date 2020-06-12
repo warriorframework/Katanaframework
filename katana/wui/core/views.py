@@ -22,6 +22,7 @@ from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.forms import PasswordChangeForm
 import json
 import os
+import site
 from katana.utils.directory_traversal_utils import get_parent_directory, join_path, file_or_dir_exists
 from katana.utils.json_utils import read_json_data
 from katana.utils.navigator_util import Navigator

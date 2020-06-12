@@ -1,4 +1,5 @@
 import os
+import site
 from katana.utils.navigator_util import Navigator
 from katana.utils.json_utils import read_json_data
 

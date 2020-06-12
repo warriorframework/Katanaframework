@@ -21,6 +21,7 @@ import time
 import requests
 import json
 import shutil
+import site
 from os.path import abspath, dirname
 from termcolor import colored
 

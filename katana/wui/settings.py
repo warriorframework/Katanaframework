@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import site
 from . import settings_logging
 import katana.wui.core.core_utils.core_settings as core_settings
 try:

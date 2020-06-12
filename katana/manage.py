@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import site
 from os.path import abspath, dirname
 
 try:
