@@ -72,7 +72,7 @@ if os.path.exists(katana_configs_dir):
     try:
         if len(sys.argv) == 1:
             # output_log = subprocess.call(['pip', 'install', 'katanaframework', '--upgrade'])
-            output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.0b1'])
+            output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.1b2'])
         elif len(sys.argv) == 3:
             if sys.argv[1] in ['-v', '-V']:
                 data = requests.get('https://pypi.python.org/pypi/katanaframework/json')
@@ -81,7 +81,7 @@ if os.path.exists(katana_configs_dir):
                 if sys.argv[2].strip() in versions_list:
                     output_log = subprocess.call(['pip', 'uninstall', 'katanaframework', '-y'])
                     # _pkg = 'katanaframework==' + sys.argv[2].strip()
-                    output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.0b1'])
+                    output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.1b2'])
                 else:
                     print(colored("Error: Could't find the specified version of katanaframework.", "red"))
                     sys.exit()
