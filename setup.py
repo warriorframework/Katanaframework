@@ -13,7 +13,7 @@ limitations under the License.
 from setuptools import setup, find_packages
 
 PACKAGE_NAME = "katanaframework"
-PACKAGE_VERSION = "1.0.1b3"
+PACKAGE_VERSION = "1.0.1b4"
 
 setup(
     name=PACKAGE_NAME,

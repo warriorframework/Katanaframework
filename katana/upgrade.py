@@ -72,7 +72,7 @@ if os.path.exists(katana_configs_dir):
     try:
         if len(sys.argv) == 1:
             # output_log = subprocess.call(['pip', 'install', 'katanaframework', '--upgrade'])
-            output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.1b3'])
+            output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.1b4'])
         elif len(sys.argv) == 3:
             if sys.argv[1] in ['-v', '-V']:
                 data = requests.get('https://pypi.python.org/pypi/katanaframework/json')
@@ -81,7 +81,7 @@ if os.path.exists(katana_configs_dir):
                 if sys.argv[2].strip() in versions_list:
                     output_log = subprocess.call(['pip', 'uninstall', 'katanaframework', '-y'])
                     # _pkg = 'katanaframework==' + sys.argv[2].strip()
-                    output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.1b3'])
+                    output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.1b4'])
                 else:
                     print(colored("Error: Could't find the specified version of katanaframework.", "red"))
                     sys.exit()
@@ -95,9 +95,9 @@ if os.path.exists(katana_configs_dir):
         sys.exit()
     else:
         if os.path.exists(backup_dir):
-            if os.path.exists(os.path.join(BASE_DIR, "katana_configs")):
-                shutil.rmtree(os.path.join(BASE_DIR, "katana_configs"))
-            shutil.copytree(backup_dir, os.path.join(BASE_DIR, "katana_configs"))
+            if os.path.exists(katana_configs_dir):
+                shutil.rmtree(katana_configs_dir)
+            shutil.copytree(backup_dir, katana_configs_dir)
             output_log = subprocess.call(['python', appmanage_py])
             time.sleep(1)
             print(colored("Restore successful" + u'\u2713', "green"))
