@@ -22,6 +22,7 @@ from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.forms import PasswordChangeForm
 import json
 import os
+import site
 from katana.utils.directory_traversal_utils import get_parent_directory, join_path, file_or_dir_exists
 from katana.utils.json_utils import read_json_data
 from katana.utils.navigator_util import Navigator
@@ -253,10 +254,19 @@ class SiteSettingsView(UserPassesTestMixin, View,):
             if 'EMAIL_USE_TLS' not in new_configs:
                 new_configs['EMAIL_USE_TLS'] = False
             email_settings.update(new_configs)
+        
+        if os.environ["pipmode"] == "True":
+            virtual_env = os.getenv('VIRTUAL_ENV')
+            if virtual_env:
+                en_config_file = virtual_env + os.sep + "katana_configs" + os.sep + "en_config.ini"
+            else:
+                en_config_file = site.getuserbase() + os.sep + "katana_configs" + os.sep + "en_config.ini"
+        else:
+            en_config_file = os.path.join(BASE_DIR, "katana_configs", "en_config.ini")
 
         if os.getenv("KATANA_CRYPTO_KEY", None):
             config_file = os.path.join(BASE_DIR, 'wui', 'config.ini')
-            encrypted_config_file = os.path.join(BASE_DIR, 'katana_configs', 'en_config.ini')
+            encrypted_config_file = en_config_file
             key = os.getenv("KATANA_CRYPTO_KEY")
             encrypt_settings = ENCRYPT_SETTINGS(key)
             encrypt_settings.encrypt_file(config_file, encrypted_config_file)
