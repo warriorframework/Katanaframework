@@ -19,8 +19,10 @@ import time
 import subprocess
 import requests
 import json
+import pkg_resources
 from os.path import abspath, dirname
 from termcolor import colored
+from collections import OrderedDict
 
 try:
     import katana
@@ -43,6 +45,28 @@ nav_obj = Navigator()
 BASE_DIR = nav_obj.get_katana_dir()
 appmanage_py = os.path.join(BASE_DIR, "appmanage.py")
 
+data = requests.get('https://test.pypi.org/pypi/katanaframework/json')
+data = data.json()
+ord_dict = OrderedDict()
+ord_dict = data['releases'].keys()
+versn_list = list(ord_dict)
+
+try:
+    if (sys.argv[1] in ['-v', '-V'] and sys.argv[2] is not None):
+        if sys.argv[2] == pkg_resources.get_distribution("katanaframework").version:
+            print(colored("Current version of katanaframework is same as the given version, please restore the manually backed up files/folders and then run appmanage.py", "green"))
+            sys.exit()
+except Exception as e:
+    if pkg_resources.get_distribution("katanaframework").version == versn_list[-1]:
+        print(colored("You have already installed the latest version of katanaframework, please restore the manually backed up files/folders and then run appmanage.py", "green"))
+        sys.exit()
+
+if (os.path.exists(os.path.join(BASE_DIR, 'wapps')) or os.path.exists(os.path.join(BASE_DIR, 'native')) or
+    os.path.exists(os.path.join(BASE_DIR, 'wui/settings.py')) or os.path.exists(os.path.join(BASE_DIR, 'wui/urls.py'))):
+    print(colored("Please manually backup and then delete the following files/dirs before performing the upgrade operation", "red"))
+    print(colored("1. katana/wui/settings.py and katana/wui/urls.py files", "red"))
+    print(colored("2. katana/wapps and katana/native directories", "red"))
+    sys.exit()
 
 if os.environ["pipmode"] == "True":
     virtual_env = os.getenv('VIRTUAL_ENV')
@@ -72,18 +96,20 @@ if os.path.exists(katana_configs_dir):
     try:
         if len(sys.argv) == 1:
             # output_log = subprocess.call(['pip', 'install', 'katanaframework', '--upgrade'])
-            output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.1b4'])
+            _pkg = 'katanaframework==' + versn_list[-1]
+            output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', _pkg])
         elif len(sys.argv) == 3:
             if sys.argv[1] in ['-v', '-V']:
-                data = requests.get('https://pypi.python.org/pypi/katanaframework/json')
+                # data = requests.get('https://pypi.python.org/pypi/katanaframework/json')
+                data = requests.get('https://test.pypi.org/pypi/katanaframework/json')
                 json_data = data.json()
                 versions_list = json_data["releases"].keys()
                 if sys.argv[2].strip() in versions_list:
                     output_log = subprocess.call(['pip', 'uninstall', 'katanaframework', '-y'])
-                    # _pkg = 'katanaframework==' + sys.argv[2].strip()
-                    output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', 'katanaframework==1.0.1b4'])
+                    _pkg = 'katanaframework==' + sys.argv[2].strip()
+                    output_log = subprocess.call(['pip', 'install', '--extra-index-url',  'https://test.pypi.org/simple/', _pkg])
                 else:
-                    print(colored("Error: Could't find the specified version of katanaframework.", "red"))
+                    print(colored("Error: Could't find the specified version of katanaframework, please check the version you have provided and try again.", "red"))
                     sys.exit()
         else:
             print(colored("Version number is missing.", "red"))
@@ -91,18 +117,17 @@ if os.path.exists(katana_configs_dir):
     except Exception as e:
         print(colored("Unable to upgrade katanaframework, because of the below error:\n", "red"))
         print(e)
-        print(colored("Rolling back to previous state...", "yellow"))
         sys.exit()
     else:
         if os.path.exists(backup_dir):
             if os.path.exists(katana_configs_dir):
                 shutil.rmtree(katana_configs_dir)
             shutil.copytree(backup_dir, katana_configs_dir)
-            output_log = subprocess.call(['python', appmanage_py])
             time.sleep(1)
-            print(colored("Restore successful" + u'\u2713', "green"))
+            print(colored("Data files restored successfully" + u'\u2713', "green"))
             time.sleep(1)
             print(colored("Katana framework upgrade completed.", "green"))
+            print(colored("Please restore the files which you have backed up manually and then run appmanage.py", "green"))
         else:
             print(colored("Backup not found!", "red"))
             sys.exit()
