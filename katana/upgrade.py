@@ -51,22 +51,21 @@ ord_dict = OrderedDict()
 ord_dict = data['releases'].keys()
 versn_list = list(ord_dict)
 
+if (os.path.exists(os.path.join(BASE_DIR, 'wapps')) or os.path.exists(os.path.join(BASE_DIR, 'native'))):
+    print(colored("Please manually backup and then delete the following dirs before performing the upgrade operation", "red"))
+    print(colored("1. katana/native", "red"))
+    print(colored("2. katana/wapps", "red"))
+    sys.exit()
+
 try:
     if (sys.argv[1] in ['-v', '-V'] and sys.argv[2] is not None):
         if sys.argv[2] == pkg_resources.get_distribution("katanaframework").version:
-            print(colored("Current version of katanaframework is same as the given version, please restore the manually backed up files/folders and then run appmanage.py", "green"))
+            print(colored("Current version of katanaframework is same as the given version, please restore the manually backed up wapps and native dirs, then run manage.py runserver", "green"))
             sys.exit()
 except Exception as e:
     if pkg_resources.get_distribution("katanaframework").version == versn_list[-1]:
-        print(colored("You have already installed the latest version of katanaframework, please restore the manually backed up files/folders and then run appmanage.py", "green"))
+        print(colored("You have already installed the latest version of katanaframework, please restore the manually backed up wapps and native dirs, then run manage.py runserver", "green"))
         sys.exit()
-
-if (os.path.exists(os.path.join(BASE_DIR, 'wapps')) or os.path.exists(os.path.join(BASE_DIR, 'native')) or
-    os.path.exists(os.path.join(BASE_DIR, 'wui/settings.py')) or os.path.exists(os.path.join(BASE_DIR, 'wui/urls.py'))):
-    print(colored("Please manually backup and then delete the following files/dirs before performing the upgrade operation", "red"))
-    print(colored("1. katana/wui/settings.py and katana/wui/urls.py files", "red"))
-    print(colored("2. katana/wapps and katana/native directories", "red"))
-    sys.exit()
 
 if os.environ["pipmode"] == "True":
     virtual_env = os.getenv('VIRTUAL_ENV')
@@ -127,7 +126,7 @@ if os.path.exists(katana_configs_dir):
             print(colored("Data files restored successfully" + u'\u2713', "green"))
             time.sleep(1)
             print(colored("Katana framework upgrade completed.", "green"))
-            print(colored("Please restore the files which you have backed up manually and then run appmanage.py", "green"))
+            print(colored("Please run appmanage.py to restore the katana configuration", "green"))
         else:
             print(colored("Backup not found!", "red"))
             sys.exit()
