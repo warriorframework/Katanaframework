@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'katana.wui.administration',
     'katana.wui.users',
     'katana.wui.core',
+    'katana.native.wapp_management',
 ]
 
 MIDDLEWARE = [
