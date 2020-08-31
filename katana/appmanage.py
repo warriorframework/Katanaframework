@@ -345,7 +345,6 @@ if __name__ == "__main__":
         default_apps_list = ["cases", "assembler", "cli_data", "execution", 
                                 "projects", "suites", "testwrapper", "wdf_edit"]
         Updated_Apps_list = list(set(config_apps) - set(default_apps_list))
-        # import pdb; pdb.set_trace()
         if len(Updated_Apps_list) >= 1:
             for app in Updated_Apps_list:
                 app_url = app_config_data["user_custom_apps"][app]

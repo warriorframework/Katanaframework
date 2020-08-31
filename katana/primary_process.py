@@ -198,7 +198,6 @@ def install_custom_app(app, app_url):
         if os.path.exists(tempdir):
             shutil.rmtree(tempdir)
         os.mkdir(tempdir)
-        # import pdbpdb; pdb.set_trace()
         if app_path.endswith(".zip"):
             if os.path.exists(app_path):
                 zip_ref = zipfile.ZipFile(app_path, 'r')

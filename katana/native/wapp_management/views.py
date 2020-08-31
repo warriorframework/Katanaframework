@@ -110,7 +110,6 @@ def install_an_app(request):
     elif installer_obj.message != "" and installer_output == "Prompt":
         output_data["status"] = "Prompt"
         output_data["message"] += "\n" + installer_obj.message
-    # import pdb; pdb.set_trace()
     return JsonResponse(output_data)
 
 def after_prompt_install(request):
@@ -157,7 +156,6 @@ def after_prompt_install(request):
         remove_app_from_settings_custom(app_name, "wapps")
         remove_cust_app_source(app_name, "wapps")
     install_custom_app(app_name, app_path)
-    # import pdb; pdb.set_trace()
     return JsonResponse(output_data)
 
 class AppInstallConfig(View):

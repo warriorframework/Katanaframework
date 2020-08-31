@@ -87,7 +87,6 @@ class Installer:
         else:
             output = copy_dir(self.path_to_app, temp_app_path)
             self.delete_app_dir.append(self.path_to_app)
-        # import pdb; pdb.set_trace()
         return output
 
     def __edit_urls_py(self):
