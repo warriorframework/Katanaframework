@@ -31,16 +31,16 @@ class Installer:
     def install(self):
         output = self.__add_app_directory()
 
-        if output:
+        if output and output != "Prompt":
             output = self.__add_plugins()
 
-        if output:
+        if output and output != "Prompt":
             output = self.__edit_settings_py()
 
-        if output:
+        if output and output != "Prompt":
             output = self.__edit_urls_py()
 
-        if not output:
+        if not output and output != "Prompt":
             if self.__revert_installation():
                 print("App installation successfully reverted.")
 
@@ -65,13 +65,29 @@ class Installer:
     def __add_app_directory(self):
         temp_app_path = join_path(self.app_directory, self.app_name)
         if os.path.exists(temp_app_path):
-            output = False
-            message = "-- An Error Occurred -- Directory already exists: {0}.".format(temp_app_path)
+            wf_config_extng = os.path.join(temp_app_path, "wf_config.json")
+            wf_config_new = os.path.join(self.path_to_app, "wf_config.json")
+            data_extng = read_json_data(wf_config_extng)
+            data_new = read_json_data(wf_config_new)
+            existing_version = data_extng["version"]
+            new_version = data_new["version"]
+            if existing_version == new_version:
+                app_status = "Reinstall"
+            elif existing_version < new_version:
+                app_status = "Upgrade"
+            else:
+                app_status = "Downgrade"
+            output = "Prompt"
+            if app_status == "Reinstall":
+                message = "{0} app with the same version {1} already exists. Do you want to {2}?".format(self.app_name, new_version, app_status)
+            else:
+                message = "{0} app with the version {1} already exists. Do you want to {2} to {3}?".format(self.app_name, existing_version, app_status, new_version)
             print(message)
             self.message += message
         else:
             output = copy_dir(self.path_to_app, temp_app_path)
             self.delete_app_dir.append(self.path_to_app)
+        # import pdb; pdb.set_trace()
         return output
 
     def __edit_urls_py(self):

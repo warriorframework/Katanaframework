@@ -204,7 +204,7 @@ def install_custom_app(app, app_url):
                 zip_ref = zipfile.ZipFile(app_path, 'r')
                 zip_ref.extractall(tempdir)
                 zip_ref.close()
-                app_path = os.path.join(tempdir, app)
+                app_path = new_app_path = os.path.join(tempdir, app)
         if os.path.exists(existing_app_path):
             usr_choice, message = pre_install_checks(app, existing_app_path, new_app_path)
             if usr_choice not in ["y", "Y", "yes", "YES", "n", "N", "NO", "no"]:
@@ -446,7 +446,7 @@ def update_panel_color(panel_color):
         f.writelines(".header {background:"+panel_color+"}")
 
 def check_app_version(existing_app, new_app):
-    #compare versions
+    """This function will compare the versions of the existing app and the new app"""
     wf_config_extng = os.path.join(existing_app, "wf_config.json")
     wf_config_new = os.path.join(new_app, "wf_config.json")
     data_extng = read_json_data(wf_config_extng)
@@ -462,6 +462,7 @@ def check_app_version(existing_app, new_app):
     return existing_version, new_version, message
 
 def get_user_input(appname, message, existing_version, new_version):
+    """This function is used to get the user input(y/n)"""
     if message == "Reinstall":
         print("{0} app with the same version ({1}) already exists, Do you want to {2} (Y/n)?".format(appname, existing_version, message))
     else:
@@ -473,6 +474,7 @@ def get_user_input(appname, message, existing_version, new_version):
         return "Y"
 
 def pre_install_checks(appname, extng_app_path, new_app_path):
+    """This function is used to perfrom prechecks before installing an app"""
     existing_version, new_version, message = check_app_version(extng_app_path, new_app_path)
     if message == "Reinstall":
         user_choice = get_user_input(appname, message, existing_version, new_version)

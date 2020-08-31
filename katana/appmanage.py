@@ -225,6 +225,7 @@ if __name__ == "__main__":
             f.write(json.dumps(clean_data, indent=4))
             
     def wait_for(sec):
+        """This function is used to wait for given time(in seconds)"""
         i = sec
         while i>0:
             print("{0} {1} {2}".format("Re-checking server status in:", i, "seconds"),  end="  \r")

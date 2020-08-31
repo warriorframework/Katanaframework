@@ -92,7 +92,8 @@ var wapp_management = {
         if (message === undefined){
             message = {
                 "installed": [],
-                "not_installed": []
+                "not_installed": [],
+                "prompt":[]
             }
         }
         var $currentPage = katana.$activeTab
@@ -109,13 +110,15 @@ var wapp_management = {
                 url: 'wapp_management/install_an_app/',
                 data: {"app_paths": app_path},
             }).done(function(data){
-                // $($formDivChildren[0].val(""));
-                if(data.status){
+                if(data.status == "True"){
                     var temp = {"name": app_path, "message": data.message, "status": true};
                     message["installed"].push(temp);
-                } else {
+                } else if(data.status == "False") {
                     var temp = {"name": app_path, "message": data.message, "status": false};
                     message["not_installed"].push(temp);
+                }else if(data.status == "Prompt"){
+                    var temp = {"name": app_path, "message": data.message, "status": false};
+                    message["prompt"].push(temp);
                 }
                 var alertType = "success";
                 var heading = "App has been installed.";
@@ -134,10 +137,22 @@ var wapp_management = {
                     text += message["not_installed"][i]["name"] + " could not be installed. Errors: " + message["not_installed"][i]["message"] + "<br><br>";
                 }
             }
+            if(message["prompt"].length > 0){
+                alertType = "warning";
+                heading = "App already exists.";
+                for(var i=0; i<message["prompt"].length; i++){
+                    text += message["prompt"][i]["message"];
+                }
+            }
             wapp_management.timerAlert("Finishing setup...", "Please wait untill this process completes.", "40000")
             setTimeout(function(){
+                if(alertType != "warning"){
                 wapp_management.alert(heading, text, alertType)
-            }, 40010)
+                }
+                else{
+                    wapp_management.user_prompt(heading, text, alertType, app_path)
+                }
+            }, 25010)
             });
         }
     },
@@ -170,6 +185,65 @@ var wapp_management = {
             },
             onClose: () => {
               clearInterval(timerInterval)
+            }
+          })
+    },
+
+    user_prompt: function(title, message, message_type, app_path){
+        Swal.fire({
+            title: title,
+            text: message,
+            icon: message_type,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+          }).then((result) => {
+            if (result.value) {
+                msg = {
+                    "installed": [],
+                    "not_installed": [],
+                    "prompt":[]
+                }
+                $.ajax({
+                    headers: {
+                        'X-CSRFToken': wapp_management.getCookie('csrftoken')
+                    },
+                    type: 'POST',
+                    url: 'wapp_management/after_prompt_install/',
+                    data: {"app_paths": app_path},
+                }).done(function(data){
+                    if(data.status == "True"){
+                        var temp = {"name": app_path, "message": data.message, "status": true};
+                        msg["installed"].push(temp);
+                    } else if(data.status == "False") {
+                        var temp = {"name": app_path, "message": data.message, "status": false};
+                        msg["not_installed"].push(temp);
+                    }
+
+                    var alertType = "success";
+                    var heading = "App has been installed.";
+                    var text = "";
+                    if(msg["installed"].length > 0){
+                        for(var i=0; i<message["installed"].length; i++){
+                            text += message["installed"][i]["name"] + ", ";
+                        }
+                        text = text.slice(0, -2);
+                        text += " has been installed successfully.<br><br> Please refresh the page.";
+                    }
+                    if(msg["not_installed"].length > 0){
+                        alertType = "error";
+                        heading = "App could not be installed.";
+                        for(var i=0; i<message["not_installed"].length; i++){
+                            text += message["not_installed"][i]["name"] + " could not be installed. Errors: " + message["not_installed"][i]["message"] + "<br><br>";
+                        }
+                    }
+                    wapp_management.timerAlert("Finishing setup...", "Please wait untill this process completes.", "40000")
+                    setTimeout(function(){
+                        wapp_management.alert(heading, text, alertType)
+                    }, 25010)
+
+                });
             }
           })
     },

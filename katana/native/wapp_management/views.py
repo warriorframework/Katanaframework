@@ -29,6 +29,8 @@ from katana.utils.navigator_util import Navigator
 from katana.utils.string_utils import get_repository_name
 from katana.wui.core.core_utils.app_info_class import AppInformation
 nav_obj = Navigator()
+from katana.primary_process import remove_cust_app_source, remove_appurl_from_urls_custom, remove_app_from_settings_custom, \
+    configure_settings_file_custom_app, configure_urls_file_custom, install_custom_app
 
 
 class WappManagementView(View):
@@ -101,12 +103,62 @@ def install_an_app(request):
             output_data["message"] = "-- An Error Occurred -- {0} does not exist".format(app_path)
             print(output_data["message"])
     installer_obj = Installer(get_parent_directory(nav_obj.get_katana_dir()), app_path)
-    installer_obj.install()
-    if installer_obj.message != "":
+    installer_output = installer_obj.install()
+    if installer_obj.message != "" and installer_output != "Prompt":
         output_data["status"] = False
         output_data["message"] += "\n" + installer_obj.message
+    elif installer_obj.message != "" and installer_output == "Prompt":
+        output_data["status"] = "Prompt"
+        output_data["message"] += "\n" + installer_obj.message
+    # import pdb; pdb.set_trace()
     return JsonResponse(output_data)
 
+def after_prompt_install(request):
+    app_path = request.POST.get("app_paths")
+    app_name = get_dir_from_path(app_path)
+    dot_data_dir = join_path(nav_obj.get_katana_dir(), "native", "wapp_management", ".data")
+    temp_dir_path = join_path(dot_data_dir, "temp")
+    output_data = {"status": True, "message": ""}
+
+    if os.path.exists(temp_dir_path):
+        shutil.rmtree(temp_dir_path)
+    create_dir(temp_dir_path)
+
+    if app_path.endswith(".git"):
+        repo_name = get_repository_name(app_path)
+        os.system("git clone {0} {1}".format(app_path, join_path(temp_dir_path, repo_name)))
+        app_path = join_path(temp_dir_path, repo_name)
+    elif app_path.endswith(".zip"):
+        if os.path.exists(app_path):
+            temp = app_path.split(os.sep)
+            temp = temp[len(temp)-1]
+            shutil.copyfile(app_path, join_path(temp_dir_path, temp))
+            zip_ref = zipfile.ZipFile(join_path(temp_dir_path, temp), 'r')
+            zip_ref.extractall(temp_dir_path)
+            zip_ref.close()
+            app_path = join_path(temp_dir_path, temp[:-4])
+        else:
+            output_data["status"] = False
+            output_data["message"] = "-- An Error Occurred -- {0} does not exist".format(app_path)
+            print(output_data["message"])
+    else:
+        if os.path.isdir(app_path):
+            filename = get_dir_from_path(app_path)
+            copy_dir(app_path, join_path(temp_dir_path, filename))
+            app_path = join_path(temp_dir_path, filename)
+        else:
+            output_data["status"] = False
+            output_data["message"] = "-- An Error Occurred -- {0} does not exist".format(app_path)
+            print(output_data["message"])
+    if os.path.exists(join_path(get_parent_directory(nav_obj.get_katana_dir()), "katana", "wapps", app_name)):
+        output_data["status"] = True
+        output_data["message"] = "{0} app installed succesfully.".format(app_name)
+        remove_appurl_from_urls_custom(app_name, "wapps")
+        remove_app_from_settings_custom(app_name, "wapps")
+        remove_cust_app_source(app_name, "wapps")
+    install_custom_app(app_name, app_path)
+    # import pdb; pdb.set_trace()
+    return JsonResponse(output_data)
 
 class AppInstallConfig(View):
 

@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^open_config/$', views.open_config, name='open_config'),
     url(r'^validate_app_path/$', views.validate_app_path, name='validate_app_path'),
     url(r'^update_installed_apps_section/$', views.update_installed_apps_section, name='update_installed_apps_section'),
+    url(r'^after_prompt_install/$', views.after_prompt_install, name='after_prompt_install'),
 ]
