@@ -47,10 +47,13 @@ if __name__ == "__main__":
         virtual_env = os.getenv('VIRTUAL_ENV')
         if virtual_env:
             app_config_json_path = virtual_env + os.sep + "katana_configs" + os.sep + "app_config.json"
-        else:
+        elif os.path.exists(site.getuserbase() + os.sep + "katana_configs"):
             app_config_json_path = site.getuserbase() + os.sep + "katana_configs" + os.sep + "app_config.json"
-            if not os.path.exists(app_config_json_path):
-                app_config_json_path = "/usr/local/katana_configs/app_config.json"
+        elif os.path.exists("/usr/local/katana_configs"):
+            app_config_json_path = "/usr/local/katana_configs/app_config.json"
+        else:
+            print("--An error occured: Can not find katana_configs directory")
+            exit()
     else:
         app_config_json_path = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
 
