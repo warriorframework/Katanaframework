@@ -49,6 +49,8 @@ if __name__ == "__main__":
             app_config_json_path = virtual_env + os.sep + "katana_configs" + os.sep + "app_config.json"
         else:
             app_config_json_path = site.getuserbase() + os.sep + "katana_configs" + os.sep + "app_config.json"
+            if not os.path.exists(app_config_json_path):
+                app_config_json_path = "/usr/local/katana_configs/app_config.json"
     else:
         app_config_json_path = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
 

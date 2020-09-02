@@ -60,6 +60,8 @@ if os.environ["pipmode"] == "True":
         app_config_file = virtual_env + os.sep + "katana_configs" + os.sep + "app_config.json"
     else:
         app_config_file = site.getuserbase() + os.sep + "katana_configs" + os.sep + "app_config.json"
+        if not os.path.exists(app_config_file):
+            app_config_file = "/usr/local/katana_configs/app_config.json"
 else:
     app_config_file = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
 
