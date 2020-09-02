@@ -25,7 +25,8 @@ setup(
     packages=find_packages(),
     package_data={'':['**/*', '*']},
     include_package_data=True,
-    data_files=[],
+    data_files=[('katana_configs', ['katana/katana_configs/app_config.json', \
+                                    'katana/katana_configs/db.sqlite3'])],
     long_description=open('module.txt').read(),
     description="Katana Framework is an open source Automation Framework",
     url="https://github.com/warriorframework/Katanaframework",

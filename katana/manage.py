@@ -2,6 +2,7 @@
 import os
 import sys
 import json
+import site
 from os.path import abspath, dirname
 
 try:
@@ -42,7 +43,15 @@ if __name__ == "__main__":
         raise
     nav_obj = Navigator()
     BASE_DIR = nav_obj.get_katana_dir()
-    app_config_json_path = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
+    if os.environ["pipmode"] == "True":
+        virtual_env = os.getenv('VIRTUAL_ENV')
+        if virtual_env:
+            app_config_json_path = virtual_env + os.sep + "katana_configs" + os.sep + "app_config.json"
+        else:
+            app_config_json_path = site.getuserbase() + os.sep + "katana_configs" + os.sep + "app_config.json"
+    else:
+        app_config_json_path = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
+
     def read_config_file_data():
             nav_obj = Navigator()
             data = read_json_data(app_config_json_path)
