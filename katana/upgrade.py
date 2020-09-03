@@ -79,10 +79,11 @@ if os.environ["pipmode"] == "True":
         katana_configs_dir = "/usr/local/katana_configs"
         backup_dir = "/usr/local" + os.sep + ".backup/katana_configs"
     else:
-        print("--An error occured: Can not find katana_configs directory")
-        exit()
+        print("--An error occured: Could not find katana_configs directory")
+        sys.exit()
 else:
-    katana_configs_dir = os.path.join(BASE_DIR, "katana_configs")
+    print("--An error occured: Could not find an existing katanaframework PIP package.")
+    sys.exit()
 
 print(colored("Upgrading Katana framework, please hold on a moment !", "green"))
 time.sleep(1)
