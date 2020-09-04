@@ -14,7 +14,9 @@ import os
 import shutil
 import json
 import sys
+import select
 import base64
+import zipfile
 from termcolor import colored
 from os.path import abspath, dirname
 from git import Repo
@@ -60,7 +62,7 @@ def __appmanager__(deleted_Apps_list):
     """this function is used to perform the primary checks before starting the app installation process"""
     if len(deleted_Apps_list) > 0:
         for uapp in deleted_Apps_list:
-            if uapp in ["settings", "microservice_store", "wapp_management", "wappstore"]:
+            if uapp in ["settings", "microservice_store", "wappstore"]:
                 remove_appurl_from_urls_custom(uapp, "native")
                 remove_app_from_settings_custom(uapp, "native")
                 remove_cust_app_source(uapp, "native")
@@ -117,13 +119,17 @@ def install_default_apps(default_branch):
     shutil.rmtree(tempdirr)
 
 
-def install_custom_app(app, app_url):
+def install_custom_app(app, app_url, app_trigger = "False"):
     """this function is used to install custom apps"""
+    if app.endswith(".zip"):
+        app = app.split(".")[0]
+    if app.endswith(".git"):
+        app = app.split(".")[0]
     if not os.path.exists(wapps_dir_path):
         os.mkdir(wapps_dir)
     app_url = app_url.split(" ")
     directory = app
-    if app_url[0].startswith("http"):
+    if app_url[0].endswith(".git"):
         if len(app_url) == 3:
             repo_url = app_url[0]
             user_branch = app_url[2]
@@ -143,20 +149,104 @@ def install_custom_app(app, app_url):
                    Repo.clone_from(repo_url, tempdir, branch=user_branch)
                except:
                      raise
-        source = os.path.join(tempdir, directory)
-        destination = os.path.join(wapps_dir_path, directory)
-        if os.path.exists(destination):
-            shutil.rmtree(destination)
-        shutil.move(source, destination)
-        shutil.rmtree(tempdir)
+        #check if app already exists then compare version and ask for user input
+        existing_app_path = os.path.join(BASE_DIR, "wapps", directory)
+        new_app_path = os.path.join(tempdir)
+        if os.path.exists(existing_app_path):
+            usr_choice, message = pre_install_checks(app, existing_app_path, new_app_path, app_trigger)
+            if usr_choice not in ["y", "Y", "yes", "YES", "n", "N", "NO", "no"]:
+                if message != "Reinstall":
+                    print(colored("Invalid choice!, continuing with the default choice: (Y)", "yellow"))
+                    usr_choice = "Y"
+                else:
+                    print(colored("Invalid choice!, continuing with the default choice: (N)", "yellow"))
+                    usr_choice = "N"
+            if usr_choice in ["Y", "y", "yes", "YES"]:
+                if message == "Reinstall":
+                    print("Reinstalling the " + app + " app")
+                elif message == "Upgrade":
+                    print("Upgrading the " + app + " app")
+                elif message == "Downgrade":
+                    print("Downgrading the " + app + " app")
+                remove_appurl_from_urls_custom(app, "wapps")
+                remove_app_from_settings_custom(app, "wapps")
+                remove_cust_app_source(app, "wapps")
+                source = os.path.join(tempdir)
+                destination = os.path.join(wapps_dir_path, directory)
+                shutil.move(source, destination)
+                configure_urls_file_custom(app, "wapps")
+                configure_settings_file_custom_app(app)
+                return "True"
+            else:
+                print(colored(message +": Skipped", "yellow"))
+                return "False"
+        else:
+            print("Installing: " + app)
+            create_log("Installing: " + app)
+            source = os.path.join(tempdir)
+            destination = os.path.join(wapps_dir_path, directory)
+            if os.path.exists(destination):
+                shutil.rmtree(destination)
+            shutil.move(source, destination)
+            configure_urls_file_custom(app, "wapps")
+            configure_settings_file_custom_app(app)
+            return "True"
+        if os.path.exists(tempdir):
+            shutil.rmtree(tempdir)
     else:
-        destination = os.path.join(wapps_dir_path, directory)
+        #check if app already exists then compare version and ask for user input
+        existing_app_path = os.path.join(wapps_dir_path, directory)
+        new_app_path = app_url[0]
+        destination = existing_app_path
         app_path = app_url[0]
-        if os.path.isdir(app_path):
-            shutil.copytree(app_path, destination)
-    configure_urls_file_custom(app, "wapps")
-    configure_settings_file_custom_app(app)
-
+        tempdir = os.path.join(BASE_DIR, directory)
+        if os.path.exists(tempdir):
+            shutil.rmtree(tempdir)
+        os.mkdir(tempdir)
+        if app_path.endswith(".zip"):
+            if os.path.exists(app_path):
+                zip_ref = zipfile.ZipFile(app_path, 'r')
+                zip_ref.extractall(tempdir)
+                zip_ref.close()
+                app_path = new_app_path = os.path.join(tempdir, app)
+        if os.path.exists(existing_app_path):
+            usr_choice, message = pre_install_checks(app, existing_app_path, new_app_path, app_trigger)
+            if usr_choice not in ["y", "Y", "yes", "YES", "n", "N", "NO", "no"]:
+                print(colored("Invalid choice!, it must be (y/n)", "yellow"))
+                usr_choice, message = pre_install_checks(app, existing_app_path, new_app_path, app_trigger)
+            if usr_choice not in ["y", "Y", "yes", "YES", "n", "N", "NO", "no"]:
+                print(colored("Invalid choice!, continuing with the default choice: (y)", "yellow"))
+                usr_choice = "Y"
+            if usr_choice in ["Y", "y", "yes", "YES"]:
+                if message == "Reinstall":
+                    print("Reinstalling the " + app + " app")
+                elif message == "Upgrade":
+                    print("Upgrading the " + app + " app")
+                elif message == "Downgrade":
+                    print("Downgrading the " + app + " app")
+                remove_appurl_from_urls_custom(app, "wapps")
+                remove_app_from_settings_custom(app, "wapps")
+                remove_cust_app_source(app, "wapps")
+                if os.path.isdir(app_path):
+                    shutil.copytree(app_path, destination)
+                    configure_urls_file_custom(app, "wapps")
+                    configure_settings_file_custom_app(app)
+                    if os.path.exists(tempdir):
+                        shutil.rmtree(tempdir)
+                    return "True"
+            else:
+                print(colored(message +": Skipped", "yellow"))
+                if os.path.exists(tempdir):
+                    shutil.rmtree(tempdir)
+                return "False"
+        else:
+            print("Installing: " + app)
+            create_log("Installing: " + app)
+            if os.path.isdir(app_path):
+                shutil.copytree(app_path, destination)
+                configure_urls_file_custom(app, "wapps")
+                configure_settings_file_custom_app(app)
+                return "True"
 
 def remove_cust_app_source(uapp, category):
     """this function removes custom app source code"""
@@ -354,3 +444,51 @@ def update_panel_color(panel_color):
         css_data = f.readlines()
     with open(css_file, "w") as f:
         f.writelines(".header {background:"+panel_color+"}")
+
+def check_app_version(existing_app, new_app):
+    """This function will compare the versions of the existing app and the new app"""
+    wf_config_extng = os.path.join(existing_app, "wf_config.json")
+    wf_config_new = os.path.join(new_app, "wf_config.json")
+    data_extng = read_json_data(wf_config_extng)
+    data_new = read_json_data(wf_config_new)
+    existing_version = data_extng["version"]
+    new_version = data_new["version"]
+    if existing_version == new_version:
+        message = "Reinstall"
+    elif existing_version < new_version:
+        message = "Upgrade"
+    else:
+        message = "Downgrade"
+    return existing_version, new_version, message
+
+def get_user_input(appname, message, existing_version, new_version):
+    """This function is used to get the user input(y/n)"""
+    if message == "Reinstall":
+        print("{0} app with the same version ({1}) already exists, Do you want to {2} (Y/n)?".format(appname, existing_version, message))
+    else:
+        print("{0} app with {1} version already exists, Do you want to {2} to {3} (Y/n)?".format(appname, existing_version, message, new_version))
+    i, o, e = select.select( [sys.stdin], [], [], 10 )
+    if (i):
+        return sys.stdin.readline().strip()
+    else:
+        if message == "Reinstall":
+            return "N"
+        else:
+            return "Y"
+
+def pre_install_checks(appname, extng_app_path, new_app_path, app_trigger):
+    """This function is used to perfrom prechecks before installing an app"""
+    existing_version, new_version, message = check_app_version(extng_app_path, new_app_path)
+    if app_trigger == "False":
+        if message == "Reinstall":
+            user_choice = get_user_input(appname, message, existing_version, new_version)
+            return user_choice, message
+        elif message == "Upgrade":
+            user_choice = get_user_input(appname, message, existing_version, new_version)
+            return user_choice, message
+        elif message == "Downgrade":
+            user_choice = get_user_input(appname, message, existing_version, new_version)
+            return user_choice, message
+    elif app_trigger == "True":
+        user_choice = "Y"
+        return user_choice, message

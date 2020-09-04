@@ -10,10 +10,13 @@ if os.environ["pipmode"] == "True":
     virtual_env = os.getenv('VIRTUAL_ENV')
     if virtual_env:
         app_config_file = virtual_env + os.sep + "katana_configs" + os.sep + "app_config.json"
-    else:
+    elif os.path.exists(site.getuserbase() + os.sep + "katana_configs"):
         app_config_file = site.getuserbase() + os.sep + "katana_configs" + os.sep + "app_config.json"
-        if not os.path.exists(app_config_file):
-            app_config_file = "/usr/local/katana_configs/app_config.json"
+    elif os.path.exists("/usr/local/katana_configs"):
+        app_config_file = "/usr/local/katana_configs/app_config.json"
+    else:
+        print("--An error occured: Can not find katana_configs directory")
+        exit()
 else:
     app_config_file = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
 

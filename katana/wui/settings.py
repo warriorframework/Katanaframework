@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     'katana.wui.administration',
     'katana.wui.users',
     'katana.wui.core',
+    'katana.native.wapp_management',
+
 ]
 
 MIDDLEWARE = [
@@ -107,9 +109,15 @@ if os.environ["pipmode"] == "True":
     if virtual_env:
         dbsqlite_path = virtual_env + os.sep + "katana_configs" + os.sep + "db.sqlite3"
         en_config_path = virtual_env + os.sep + "katana_configs" + os.sep + "en_config.ini"
-    else:
+    elif os.path.exists(site.getuserbase() + os.sep + "katana_configs"):
         dbsqlite_path = site.getuserbase() + os.sep + "katana_configs" + os.sep + "db.sqlite3"
         en_config_path = site.getuserbase() + os.sep + "katana_configs" + os.sep + "en_config.ini"
+    elif os.path.exists("/usr/local/katana_configs"):
+        dbsqlite_path = "/usr/local/katana_configs/db.sqlite3"
+        en_config_path = "/usr/local/katana_configs/en_config.ini"
+    else:
+        print("--An error occured: Can not find katana_configs directory")
+        exit()
 else:
     dbsqlite_path = os.path.join(BASE_DIR, "katana_configs", "db.sqlite3")
     en_config_path = os.path.join(BASE_DIR, 'katana_configs', 'en_config.ini')

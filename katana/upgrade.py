@@ -71,18 +71,19 @@ if os.environ["pipmode"] == "True":
     virtual_env = os.getenv('VIRTUAL_ENV')
     if virtual_env:
         katana_configs_dir = virtual_env + os.sep + "katana_configs"
-    else:
+        backup_dir = virtual_env + os.sep + ".backup/katana_configs"
+    elif os.path.exists(site.getuserbase() + os.sep + "katana_configs"):
         katana_configs_dir = site.getuserbase() + os.sep + "katana_configs"
-        if not os.path.exists(katana_configs_dir):
-            katana_configs_dir = "/usr/local/katana_configs"
+        backup_dir = site.getuserbase() + os.sep + ".backup/katana_configs"
+    elif os.path.exists("/usr/local/katana_configs"):
+        katana_configs_dir = "/usr/local/katana_configs"
+        backup_dir = "/usr/local" + os.sep + ".backup/katana_configs"
+    else:
+        print("--An error occured: Could not find katana_configs directory")
+        sys.exit()
 else:
-    katana_configs_dir = os.path.join(BASE_DIR, "katana_configs")
-
-virtual_env = os.getenv('VIRTUAL_ENV')
-if virtual_env:
-    backup_dir = virtual_env + os.sep + ".backup/katana_configs"
-else:
-    backup_dir = site.getuserbase() + os.sep + ".backup/katana_configs"
+    print("--An error occured: Could not find an existing katanaframework PIP package.")
+    sys.exit()
 
 print(colored("Upgrading Katana framework, please hold on a moment !", "green"))
 time.sleep(1)
