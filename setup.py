@@ -22,7 +22,7 @@ setup(
     author_email='frameworkwarrior@gmail.com',
     scripts=['katana/manage.py',
              'katana/appmanage.py',
-             'katana/upgrade.py'],
+             'katana/katana_upgrade.py'],
     packages=find_packages(),
     package_data={'':['**/*', '*']},
     include_package_data=True,
