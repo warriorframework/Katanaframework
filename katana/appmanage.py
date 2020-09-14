@@ -21,6 +21,7 @@ import time
 import requests
 import json
 import shutil
+import site
 from os.path import abspath, dirname
 from termcolor import colored
 
@@ -52,11 +53,25 @@ wapps_dir_path = BASE_DIR + "/wapps/"
 wapps_dir = BASE_DIR + "/wapps"
 native_dir = BASE_DIR + "/native"
 settings_file = BASE_DIR + "/wui/settings.py"
-app_config_file = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
+
+if os.environ["pipmode"] == "True":
+    virtual_env = os.getenv('VIRTUAL_ENV')
+    if virtual_env:
+        app_config_file = virtual_env + os.sep + "katana_configs" + os.sep + "app_config.json"
+    elif os.path.exists(site.getuserbase() + os.sep + "katana_configs"):
+        app_config_file = site.getuserbase() + os.sep + "katana_configs" + os.sep + "app_config.json"
+    elif os.path.exists("/usr/local/katana_configs"):
+        app_config_file = "/usr/local/katana_configs/app_config.json"
+    else:
+        print("--An error occured: Can not find katana_configs directory")
+        exit()
+else:
+    app_config_file = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
+
 manage_py = os.path.join(BASE_DIR, "manage.py")
 urls_file = BASE_DIR + "/wui/urls.py"
 wapps_content = os.listdir(wapps_dir)
-wapp_ignore = ["__init__.py", "__pycache__", "readme.txt"]
+wapp_ignore = ["__init__.py", "__pycache__", "readme.txt", "wapp_management"]
 wapps_app = list(set(wapps_content) - set(wapp_ignore))
 native_content = os.listdir(native_dir)
 native_app = list(set(native_content) - set(wapp_ignore))
@@ -85,20 +100,6 @@ if __name__ == "__main__":
                 "forget to activate a virtual environment?"
             )
         raise
-    try:
-        import katana
-
-        os.environ["pipmode"] = "True"
-    # except ModuleNotFoundError as error:
-    except:
-        WARRIORDIR = dirname(dirname(abspath(__file__)))
-        sys.path.append(WARRIORDIR)
-        try:
-            import katana
-
-            os.environ["pipmode"] = "False"
-        except:
-            raise
 
     def __port_error__():
         """this function prints port error message"""
@@ -107,9 +108,7 @@ if __name__ == "__main__":
 
     def read_config_file_data():
         """this function reads the data from appconfig.json file"""
-        config_file_path = join_path(
-            nav_obj.get_katana_dir(), "katana_configs", "app_config.json")
-        data = read_json_data(config_file_path)
+        data = read_json_data(app_config_file)
         return data
     app_config_data = read_config_file_data()
 
@@ -173,7 +172,7 @@ if __name__ == "__main__":
                     final_input_json_data["apps_rely_on_postgresdb"] = []
 
                 if app_config_data["__READ_ACCESS__"] == "True":
-                    app_config_json_path = os.path.join(BASE_DIR, "katana_configs", "app_config.json")
+                    app_config_json_path = app_config_file
                     final_input_json_data["__READ_ACCESS__"] = "True"
                     final_input_json_data["__userconfigured__"] = "True"
                     final_input_json_data["__normal_run__"] = "True"
@@ -225,6 +224,7 @@ if __name__ == "__main__":
             f.write(json.dumps(clean_data, indent=4))
             
     def wait_for(sec):
+        """This function is used to wait for given time(in seconds)"""
         i = sec
         while i>0:
             print("{0} {1} {2}".format("Re-checking server status in:", i, "seconds"),  end="  \r")
@@ -241,8 +241,6 @@ if __name__ == "__main__":
 
     def thread_function_to_ping(name):
         """this function is used to ping server"""
-        print("Installing: " + name)
-        create_log("Installing: " + name)
         print("Checking Compatability for:" + name)
         create_log("Checking Compatability for: " + name)
         time.sleep(11)
@@ -342,33 +340,25 @@ if __name__ == "__main__":
                 os.mkdir(native_dir)
         default_apps_list = ["cases", "assembler", "cli_data", "execution", 
                                 "projects", "suites", "testwrapper", "wdf_edit"]
-        if app_config_data["katana_default_apps"] == "True" or \
-            app_config_data["katana_default_apps"] == "true":
-            cust_wapps = list(set(wapps_app) - set(default_apps_list))
-            Updated_Apps_list = list(set(config_apps) - set(cust_wapps))
-            Updated_Apps_list = list(
-                set(Updated_Apps_list) - set(default_apps_list))
-        else:
-            Updated_Apps_list = list(set(config_apps) - set(wapps_app))
-            Updated_Apps_list = list(
-                set(Updated_Apps_list) - set(default_apps_list))
-    
+        Updated_Apps_list = list(set(config_apps) - set(default_apps_list))
         if len(Updated_Apps_list) >= 1:
             for app in Updated_Apps_list:
                 app_url = app_config_data["user_custom_apps"][app]
                 x = multiprocessing.Process(
                     target=thread_function_to_ping, args=(app,))
+                status = "Fasle"
                 try:
                     clean_data = read_config_file_data()
                     clean_data["__READ_ACCESS__"] = "False"
                     with open(app_config_file, "w") as f:
                         f.write(json.dumps(clean_data, indent=4))
-                        install_custom_app(app, app_url)
+                        status = install_custom_app(app, app_url)
                 except Exception as e:
                     clean_data = read_config_file_data()
                     clean_data["__READ_ACCESS__"] = "False"
                     with open(app_config_file, "w") as f:
                         f.write(json.dumps(clean_data, indent=4))
+                    remove_appurl_from_urls_custom(app, "wapps")
                     remove_app_from_settings_custom(app, "wapps")
                     remove_cust_app_source(app, "wapps")
                     tempdir = os.path.join(BASE_DIR, app)
@@ -384,14 +374,15 @@ if __name__ == "__main__":
                     with open(app_config_file, "w") as f:
                         f.write(json.dumps(clean_data, indent=4))
                 else:
-                    x.start()
-                    FNULL = open(os.devnull, 'w')
-                    retcode = subprocess.call(
-                ['fuser', '-k', PORT+'/tcp'], stdout=FNULL, stderr=subprocess.STDOUT)
-                    retcode = subprocess.call(
-                        ['python3', manage_py, 'runserver', PORT], stdout=FNULL,
-                        stderr=subprocess.STDOUT)
-                    x.join()
+                    if status == "True":
+                        x.start()
+                        FNULL = open(os.devnull, 'w')
+                        retcode = subprocess.call(
+                    ['fuser', '-k', PORT+'/tcp'], stdout=FNULL, stderr=subprocess.STDOUT)
+                        retcode = subprocess.call(
+                            ['python3', manage_py, 'runserver', PORT], stdout=FNULL,
+                            stderr=subprocess.STDOUT)
+                        x.join()
             function_to_give_read_access()
             print("[100%]\nDone!")
         else:

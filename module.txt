@@ -14,6 +14,7 @@ Requires:
        cryptography==2.9.2
        gcg==0.2.0
        termcolor==1.1.0
+       psycopg2==2.8.5
 
 
 To start the Katana Server :

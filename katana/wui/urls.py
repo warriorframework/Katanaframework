@@ -21,4 +21,6 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^katana/', include('katana.wui.core.urls')),
     url(r'^$', RedirectView.as_view(url='/katana/')),
+    url(r'^katana/wapp_management/', include('katana.native.wapp_management.urls')),
+
 ]

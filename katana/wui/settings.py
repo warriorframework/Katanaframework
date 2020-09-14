@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import site
 from . import settings_logging
 import katana.wui.core.core_utils.core_settings as core_settings
 try:
@@ -32,7 +33,7 @@ SECRET_KEY = 'ayb*8x8=kl7nb+1gc_b@v$oaiopv=v2v6_zc+#d3p+xyq4xo(d'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -49,6 +50,8 @@ INSTALLED_APPS = [
     'katana.wui.administration',
     'katana.wui.users',
     'katana.wui.core',
+    'katana.native.wapp_management',
+
 ]
 
 MIDDLEWARE = [
@@ -101,11 +104,28 @@ REST_FRAMEWORK = {
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+if os.environ["pipmode"] == "True":
+    virtual_env = os.getenv('VIRTUAL_ENV')
+    if virtual_env:
+        dbsqlite_path = virtual_env + os.sep + "katana_configs" + os.sep + "db.sqlite3"
+        en_config_path = virtual_env + os.sep + "katana_configs" + os.sep + "en_config.ini"
+    elif os.path.exists(site.getuserbase() + os.sep + "katana_configs"):
+        dbsqlite_path = site.getuserbase() + os.sep + "katana_configs" + os.sep + "db.sqlite3"
+        en_config_path = site.getuserbase() + os.sep + "katana_configs" + os.sep + "en_config.ini"
+    elif os.path.exists("/usr/local/katana_configs"):
+        dbsqlite_path = "/usr/local/katana_configs/db.sqlite3"
+        en_config_path = "/usr/local/katana_configs/en_config.ini"
+    else:
+        print("--An error occured: Can not find katana_configs directory")
+        exit()
+else:
+    dbsqlite_path = os.path.join(BASE_DIR, "katana_configs", "db.sqlite3")
+    en_config_path = os.path.join(BASE_DIR, 'katana_configs', 'en_config.ini')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'katana_configs', 'db.sqlite3'),
+        'NAME': dbsqlite_path,
     },
     'postgresql': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -139,7 +159,7 @@ LOGGING = settings_logging.get_log_config()
 
 # LDAP Settings (if available)
 CONFIG_FILE = os.path.join(BASE_DIR, 'wui', 'config.ini')
-ENCRYPTED_CONFIG_FILE = os.path.join(BASE_DIR, 'katana_configs', 'en_config.ini')
+ENCRYPTED_CONFIG_FILE = en_config_path
 
 if os.getenv("KATANA_CRYPTO_KEY", None) and os.path.exists(ENCRYPTED_CONFIG_FILE):
     key = os.getenv("KATANA_CRYPTO_KEY")

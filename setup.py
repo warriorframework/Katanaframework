@@ -13,7 +13,7 @@ limitations under the License.
 from setuptools import setup, find_packages
 
 PACKAGE_NAME = "katanaframework"
-PACKAGE_VERSION = "1.0.0"
+PACKAGE_VERSION = "1.1.0"
 
 setup(
     name=PACKAGE_NAME,
@@ -21,11 +21,13 @@ setup(
     author="warriorteam",
     author_email='frameworkwarrior@gmail.com',
     scripts=['katana/manage.py',
-             'katana/appmanage.py'],
+             'katana/appmanage.py',
+             'katana/katana_upgrade.py'],
     packages=find_packages(),
     package_data={'':['**/*', '*']},
     include_package_data=True,
-    data_files=[],
+    data_files=[('katana_configs', ['katana/katana_configs/app_config.json', \
+                                    'katana/katana_configs/db.sqlite3'])],
     long_description=open('module.txt').read(),
     description="Katana Framework is an open source Automation Framework",
     url="https://github.com/warriorframework/Katanaframework",
