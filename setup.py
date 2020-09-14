@@ -38,7 +38,7 @@ setup(
     classifiers=['Development Status :: 5 - Production/Stable',
                  'License :: OSI Approved :: Apache Software License',
                  'Programming Language :: Python :: 3.6',],
-    install_requires=["requests==2.21.0", "Django==2.1.2", "xmltodict==0.12.0",
+    install_requires=["requests==2.21.0", "Django==2.2.13", "xmltodict==0.12.0",
                       "python-ldap", "django_auth_ldap", "djangorestframework==3.10.3",
                       "gcg==0.2.0", "termcolor==1.1.0", "cryptography==2.9.2", "psycopg2==2.8.5"]
 
