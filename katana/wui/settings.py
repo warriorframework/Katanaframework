@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'mozilla_django_oidc.middleware.SessionRefresh',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'katana.wui.users.middleware.UserExpiryMiddleware',
@@ -141,13 +142,28 @@ DATABASE_ROUTERS = ['katana.dbrouter.DbRouter']
 
 # Authentication settings
 AUTH_USER_MODEL = 'users.User'
-LOGIN_URL = '/katana/login'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
+
+
+if os.environ.get('KEYCLOAK_AUTH', False) in ['True', 'true']:
+    INSTALLED_APPS.append('keycloak_oidc',)
+    MIDDLEWARE.remove('katana.wui.users.middleware.LoginRequiredMiddleware')
+    AUTHENTICATION_BACKENDS += ('keycloak_oidc.auth.OIDCAuthenticationBackend', )
+    from keycloak_oidc.default_settings import *
+    OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
+    OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
+    OIDC_OP_AUTHORIZATION_ENDPOINT = os.environ['OIDC_OP_AUTHORIZATION_ENDPOINT']
+    OIDC_OP_TOKEN_ENDPOINT = os.environ['OIDC_OP_TOKEN_ENDPOINT']
+    OIDC_OP_USER_ENDPOINT = os.environ['OIDC_OP_USER_ENDPOINT']
+    OIDC_OP_JWKS_ENDPOINT = os.environ['OIDC_OP_JWKS_ENDPOINT']
+    OIDC_OP_LOGOUT_ENDPOINT = os.environ['OIDC_OP_LOGOUT_ENDPOINT']
+else:
+    LOGIN_URL = '/katana/login'
+    LOGIN_REDIRECT_URL = '/'
+    LOGOUT_REDIRECT_URL = '/'
 
 MULTI_USER_SUPPORT = False
 USER_HOME_DIR_TEMPLATE = None

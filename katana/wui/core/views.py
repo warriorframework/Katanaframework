@@ -29,6 +29,9 @@ from katana.utils.navigator_util import Navigator
 from katana.wui.core.apps import AppInformation
 from katana.wui.users.views import PublicView
 from .core_utils.core_settings import FileSettings, LDAPSettings, Restart, EMAILSettings, ENCRYPT_SETTINGS
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.http import HttpResponse
 
 nav_obj = Navigator()
 BASE_DIR = nav_obj.get_katana_dir()
@@ -171,7 +174,21 @@ def check_if_file_exists(request):
         output = {"exists": file_or_dir_exists(join_path(directory, filename + extension))}
     return JsonResponse(output)
 
+def class_view_decorator(function_decorator):
+    """Convert a function based decorator into a class based decorator usable
+    on class based Views.
 
+    Can't subclass the `View` as it breaks inheritance (super in particular),
+    so we monkey-patch instead.
+    """
+
+    def simple_decorator(View):
+        View.dispatch = method_decorator(function_decorator)(View.dispatch)
+        return View
+
+    return simple_decorator
+
+@class_view_decorator(login_required)
 class HomeView(View):
 
     def __init__(self):
@@ -198,7 +215,7 @@ class HomeView(View):
             userdata = json.load(f)
             return userdata
 
-
+@class_view_decorator(login_required)
 class SiteSettingsView(UserPassesTestMixin, View,):
 
     def test_func(self):
@@ -291,6 +308,7 @@ class LoginView(BaseLoginView, PublicView,):
     pass
 
 
+@class_view_decorator(login_required)
 class UserProfileView(View,):
 
     def get(self, request):
@@ -308,7 +326,7 @@ class UserProfileView(View,):
             messages.error(request, "Changes cannot be made. Please contact an admin.")
         return self.get(request)
 
-
+@class_view_decorator(login_required)
 class UserPasswordChangeView(View,):
 
     def _prep_from(self, request, form):
