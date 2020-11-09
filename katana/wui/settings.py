@@ -60,7 +60,6 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'mozilla_django_oidc.middleware.SessionRefresh',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'katana.wui.users.middleware.UserExpiryMiddleware',
@@ -151,6 +150,7 @@ AUTHENTICATION_BACKENDS = (
 if os.environ.get('KEYCLOAK_AUTH', False) in ['True', 'true']:
     INSTALLED_APPS.append('keycloak_oidc',)
     MIDDLEWARE.remove('katana.wui.users.middleware.LoginRequiredMiddleware')
+    MIDDLEWARE.append('mozilla_django_oidc.middleware.SessionRefresh')
     AUTHENTICATION_BACKENDS += ('keycloak_oidc.auth.OIDCAuthenticationBackend', )
     from keycloak_oidc.default_settings import *
     OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
