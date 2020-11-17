@@ -24,7 +24,7 @@
             {% block navbar_title_logo %}<img src="{% static 'core/images/logo.png' %}" width="30" height="30"
                 class="d-inline-block align-top" alt="">{% endblock %}
             {% block navbar_title %} {% load core_filters %} {{ "Warrior"|get_app_name }} {% endblock %}
-        </a> {% if "True"|check_timer_flag == "True" %}
+        </a> {% if "true"|check_timer_flag == "true" %}
         <div class="ml-auto">
             {% block navbar_extra_space %}
             <div id="extspc">
@@ -58,7 +58,7 @@
                 <button class="dropdown-item" type="button" onclick="location.href='/katana/login';">Login</button> {% endif %}
             </div>
         </div>
-        {% if "True"|check_fujitsu_logo_flag == "True" %}
+        {% if "true"|check_fujitsu_logo_flag == "true" %}
         <div style="margin-left: 16px;">
             {% block navbar_right_logo %}
             <img src="{% static 'core/images/fujitsulogo.png' %}" width="65" height="31" class="d-inline-block align-top" alt=""> {% endblock %}

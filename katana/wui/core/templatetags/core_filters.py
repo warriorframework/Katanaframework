@@ -20,15 +20,15 @@ def get_app_name(value):
 
 @register.filter(name="check_timer_flag", is_safe=True)
 def check_timer_flag(value):
-    fname_file = os.path.join(BASE_DIR, "katana_configs/app_config.json")
-    data = read_json_data(fname_file)
-    Flag = data["enable_utc_clock"]
+    app_config_file = os.path.join(BASE_DIR, "katana_configs/app_config.json")
+    data = read_json_data(app_config_file)
+    Flag = data["enable_utc_clock"].lower()
     return Flag
 
 
 @register.filter(name="check_fujitsu_logo_flag", is_safe=True)
 def check_fujitsu_logo_flag(value):
-    fname_file = os.path.join(BASE_DIR, "katana_configs/app_config.json")
-    data = read_json_data(fname_file)
-    Flag = data["enable_fujitsu_logo"]
+    app_config_file = os.path.join(BASE_DIR, "katana_configs/app_config.json")
+    data = read_json_data(app_config_file)
+    Flag = data["enable_fujitsu_logo"].lower()
     return Flag
