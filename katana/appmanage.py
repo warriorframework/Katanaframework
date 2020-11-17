@@ -150,6 +150,14 @@ if __name__ == "__main__":
                     final_input_json_data["custom_logo_path"] = input_json_data["custom_logo_path"]
                 else:
                     final_input_json_data["custom_logo_path"] = ""
+                if "enable_fujitsu_logo" in input_json_data:
+                    final_input_json_data["enable_fujitsu_logo"] = input_json_data["enable_fujitsu_logo"]
+                else:
+                    final_input_json_data['enable_fujitsu_logo'] = "True"
+                if "enable_utc_clock " in input_json_data:
+                    final_input_json_data["enable_utc_clock"] = input_json_data["enable_utc_clock"]
+                else:
+                    final_input_json_data['enable_utc_clock'] = "True"
                 if "panel_color" in input_json_data:
                     final_input_json_data["panel_color"] = input_json_data["panel_color"]
                 else:
