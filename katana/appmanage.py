@@ -154,7 +154,7 @@ if __name__ == "__main__":
                     final_input_json_data["enable_fujitsu_logo"] = input_json_data["enable_fujitsu_logo"]
                 else:
                     final_input_json_data['enable_fujitsu_logo'] = "True"
-                if "enable_utc_clock " in input_json_data:
+                if "enable_utc_clock" in input_json_data:
                     final_input_json_data["enable_utc_clock"] = input_json_data["enable_utc_clock"]
                 else:
                     final_input_json_data['enable_utc_clock'] = "True"
