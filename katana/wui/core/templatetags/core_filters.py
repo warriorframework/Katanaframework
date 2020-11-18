@@ -32,3 +32,11 @@ def check_fujitsu_logo_flag(value):
     data = read_json_data(app_config_file)
     Flag = data["enable_fujitsu_logo"].lower()
     return Flag
+
+
+@register.filter(name='check_logintype', is_safe=True)
+def check_logintype(value):
+    if os.environ.get('KEYCLOAK_AUTH', False) in ['True', 'true']:
+        return "keycloak"
+    else:
+        return "default"

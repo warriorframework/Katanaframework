@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+import os
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import RedirectView
@@ -24,3 +25,6 @@ urlpatterns = [
     url(r'^katana/wapp_management/', include('katana.native.wapp_management.urls')),
 
 ]
+
+if os.environ.get('KEYCLOAK_AUTH', False) in ['True', 'true']:
+    urlpatterns.append(url(r'openid/', include("keycloak_oidc.urls")),)
