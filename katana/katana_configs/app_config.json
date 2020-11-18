@@ -1,6 +1,8 @@
 {
     "app_title": "",
     "custom_logo_path": "",
+    "enable_fujitsu_logo": "True",
+    "enable_utc_clock": "True",
     "panel_color": "",
     "katana_default_apps": "True",
     "user_custom_apps": {},
