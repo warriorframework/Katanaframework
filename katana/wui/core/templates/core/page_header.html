@@ -1,5 +1,5 @@
 {% load staticfiles %}
-
+{% load core_filters %}
 	<h1>
 		<img src="{% static 'core/images/logo.png' %}" width=30 height=30>
 		{{frame_name}}
@@ -19,7 +19,11 @@
 				{% if user.is_staff %}
 				<li onclick="location.href='/admin';">Admin Page</li>
 				{% endif %}
+				{% if "default"|check_logintype == 'keycloak' %}
+				<a href="/openid/logout" style="color: white; text-decoration: none;"><li>Logout</li></a>
+				{% else %}
 				<li katana-click="katana.userAuth.logout" url="/katana/logout" id="warrior_logout">Logout</li>
+				{% endif %}
 				{% else %}
 				<li>You are not logged in.</li>
 				<li onclick="location.href='/katana/login';">Logout</li>
