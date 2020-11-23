@@ -1,5 +1,5 @@
 Release: Katana
-Version: katanaframework-1.1.0
+Version: katanaframework-1.2.0
 
 ===================
 1: Release details
@@ -9,7 +9,7 @@ Katanaframework is released as pip module in pypi server.
 -------------------------------
 1.1: List of available releases
 -------------------------------
-1. Katana = katanaframework 1.1.0  
+1. Katana = katanaframework 1.2.0  
 
 ==================
 2. Version Details
@@ -18,7 +18,7 @@ You are on  Katana Release, Version 1.1.0 Katanaframework.
 The katanaframework is released as pip installable package. 
 pre-requiste: 
      python 3.6 version and above.
-	 warriorframework 4.4.0 for warrior apps
+	 warriorframework 4.5.0 for warrior apps
     
 
 +++++++++++++++++++++++++++++++++
@@ -28,15 +28,9 @@ pre-requiste:
 -------------
 New Features:
 -------------
-[WAR-2368] -  Upgrade support for Katanaframework
-[WAR-2367] -  Moving katana_configs dir out of site-packages
-[WAR-2459] -  Katana Install/Uninstall app enhancements
-[WAR-2463] -  Katana install app Enhancements
-[WAR-2464] -  Katana Install app error Handling Enchantments
-[WAR-2466] -  Wappmangement App as Native App in Katana.
-[WAR-2469] -  Katana upgrade without virtual environment setup.
-[WAR-2363] -  Log files are not saving under the given path
-
+[WAR-2496] -  KeyCloak Integration with Katanaframework 
+[WAR-2508] -  Configurable Option for Fujitsu Logo & UTC Clock Display
+[WAR-2507] -  NESSUS Security finding issue 
 
 
 
@@ -48,7 +42,7 @@ New Features:
     pip install katanaframework
 
 2.Specfic Version katanaframework from PyPI Server
-    pip install katanaframework==1.1.0 
+    pip install katanaframework==1.2.0 
 
 3. Uninstall katanaframework
     pip uninstall katanaframework
