@@ -2,6 +2,7 @@ from django import template
 from katana.utils.json_utils import read_json_data
 from katana.utils.navigator_util import Navigator
 import os
+import site
 
 
 nav_obj = Navigator()
